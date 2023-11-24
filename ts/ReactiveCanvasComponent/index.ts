@@ -54,8 +54,7 @@ export class ReactiveCanvasComponent {
       child.element.setBubbling(this.bubbling.bind(this));
     }
 
-    this.isNeedRender = true;
-    this.render()
+    this.isNeedRender = false;
   }
 
   /**
@@ -73,6 +72,7 @@ export class ReactiveCanvasComponent {
     this.isNeedRender = true;
 
     setTimeout(() => {
+      console.log(this.isNeedRender);
       if (!this.isNeedRender) {
         return;
       }
@@ -82,10 +82,13 @@ export class ReactiveCanvasComponent {
       this.renderFunction(this.canvas, this.ctx, this.props, this.children);
 
       for (const child of this.children) {
+        console.log(child);
         if (!child.hidden) {
           this.ctx.drawImage(child.element.getCanvas(), child.x, child.y);
         }
       }
+
+      this.renderEventSingal();
     }, 0);
   }
 
@@ -130,7 +133,6 @@ export class ReactiveCanvasComponent {
    */
   bubbling() {
     this.render();
-    this.renderEventSingal();
   }
 
   /**

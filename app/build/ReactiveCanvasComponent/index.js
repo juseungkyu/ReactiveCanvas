@@ -26,8 +26,7 @@ export class ReactiveCanvasComponent {
         for (const child of children) {
             child.element.setBubbling(this.bubbling.bind(this));
         }
-        this.isNeedRender = true;
-        this.render();
+        this.isNeedRender = false;
     }
     /**
      * 프록시로 랩필된 프로퍼티를 리턴
@@ -42,6 +41,7 @@ export class ReactiveCanvasComponent {
     render() {
         this.isNeedRender = true;
         setTimeout(() => {
+            console.log(this.isNeedRender);
             if (!this.isNeedRender) {
                 return;
             }
@@ -49,10 +49,12 @@ export class ReactiveCanvasComponent {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.renderFunction(this.canvas, this.ctx, this.props, this.children);
             for (const child of this.children) {
+                console.log(child);
                 if (!child.hidden) {
                     this.ctx.drawImage(child.element.getCanvas(), child.x, child.y);
                 }
             }
+            this.renderEventSingal();
         }, 0);
     }
     /**
@@ -92,7 +94,6 @@ export class ReactiveCanvasComponent {
      */
     bubbling() {
         this.render();
-        this.renderEventSingal();
     }
     /**
      * 캔버스 원본 요소 반환

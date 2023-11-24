@@ -36,12 +36,29 @@ export class ReactiveCanvas {
   /**
    * 프레임 매니저를 작동시킵니다.
    */
-  startFreamManager() {
-    this.freamManager = setInterval(()=>{
-      if (this.isNeedRender) {
-        this.render();
-      }
-    }, 100);
+  async startFreamManager() {
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      await this.controlRender(100);
+    }
+  }
+
+  /**
+   * 동기적으로 렌더를 하기 위한 함수
+   * @param {number} time
+   * @return {Promise<void>}
+   */
+  controlRender(time: number) : Promise<void> {
+    return new Promise((res)=>{
+      setTimeout(()=>{
+        if (this.isNeedRender) {
+          this.render();
+          this.isNeedRender = false;
+        }
+
+        res();
+      }, time);
+    });
   }
 
   /**
@@ -57,13 +74,13 @@ export class ReactiveCanvas {
    */
   reservationRender() {
     this.isNeedRender = true;
+    console.log(this);
   }
 
   /**
    * 캔버스 렌더
    */
   render() {
-    this.isNeedRender = false;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     for (const component of ArrayUtil
         .unfoldMultidimensionalArray<ReactiveCanvasComponent>(

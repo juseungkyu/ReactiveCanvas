@@ -5,16 +5,12 @@ import { ReactiveCanvasComponent } from '../build/ReactiveCanvasComponent/index.
 
 export class Clock {
   constructor() {
-    const secondHand = new SecondHand();
-    const mintueHand = new MintueHand();
-    const hourHand = new HourHand();
+    this.secondHand = new SecondHand();
+    this.mintueHand = new MintueHand();
+    this.hourHand = new HourHand();
 
-    // setInterval(()=>{
-    //   const date = new Date();
-    //   secondHand.setSecond(date.getSeconds());
-    //   mintueHand.setMinute(date.getMinutes());
-    //   hourHand.setHour(date.getHours());
-    // }, 1000)
+    this.setTime();
+    setInterval(this.setTime.bind(this), 1000);
 
     this.component = new ReactiveCanvasComponent(
       {},
@@ -22,17 +18,17 @@ export class Clock {
         {
           x: 0,
           y: 0,
-          element: secondHand.getComponent(),
+          element: this.secondHand.getComponent(),
         },
         {
           x: 0,
           y: 0,
-          element: mintueHand.getComponent(),
+          element: this.mintueHand.getComponent(),
         },
         {
           x: 0,
           y: 0,
-          element: hourHand.getComponent(),
+          element: this.hourHand.getComponent(),
         }
       ],
       (canvas, ctx)=>{
@@ -42,6 +38,13 @@ export class Clock {
       }
     );
     this.component.setSize(200, 200);
+  }
+
+  setTime() {
+    const date = new Date();
+    this.secondHand.setSecond(date.getSeconds());
+    this.mintueHand.setMinute(date.getMinutes());
+    this.hourHand.setHour(date.getHours());
   }
 
   getComponent() {
